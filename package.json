@@ -65,5 +65,8 @@
     "atLeast": 100,
     "detail": true,
     "strict": true
+  },
+  "dependencies": {
+    "node-fetch": "^3.2.10"
   }
 }
