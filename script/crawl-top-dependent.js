@@ -1,6 +1,3 @@
-import fs from 'node:fs/promises'
-import fetch from 'node-fetch'
-
 /**
  * @typedef LibrariesIOSearchResult
  * @property {number} dependent_repos_count
@@ -28,18 +25,20 @@ import fetch from 'node-fetch'
  * @property {number} stars
  * @property {unknown} status
  * @property {Array<unknown>} versions
- */
-
-/**
+ *
  * @typedef Result
  * @property {number} dependents
  * @property {string} name
  */
 
-const key = 'xxxxxxxxx'
+import fs from 'node:fs/promises'
+import fetch from 'node-fetch'
+
+const key = 'xxx'
+// Stop when packages are depended on by less than this number of packages.
 const min = 500
-const destination = new URL('data-top-dependent.json', import.meta.url)
-let page = 0
+const destination = new URL('../data/top-dependent.json', import.meta.url)
+let page = 0 // First page is `1`.
 
 /** @type {Array<Result>} */
 const allResults = []

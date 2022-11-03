@@ -19,22 +19,11 @@
 import fs from 'node:fs/promises'
 import fetch from 'node-fetch'
 
-// Get download counts:
-// - https://github.com/npm/registry/blob/master/docs/download-counts.md#limits (see bulk)
-// - https://api.npmjs.org/versions/vendors/last-week (example)
-// - more info on API: https://github.com/unifiedjs/npm-tools/blob/main/npm.md#get-a-package.
-//   - https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md#get-v1search
-
 let slice = 0
-const size = 128
-const destination = new URL('data-download-counts.json', import.meta.url)
-const allTheNames = [
-  'remark',
-  '@types/mdast',
-  '@wooorm/starry-night',
-  'vendors',
-  '@asd/4awztrdxtghkjkfcydugvkbln'
-]
+const size = 128 // Up to 128 at a time are allowed.
+const destination = new URL('../data/download-counts.json', import.meta.url)
+const input = new URL('../data/packages.txt', import.meta.url)
+const allTheNames = String(await fs.readFile(input)).split('\n')
 /** @type {Array<string>} */
 const unscoped = []
 /** @type {Array<string>} */
@@ -51,7 +40,10 @@ for (const name of allTheNames) {
 /** @type {Array<Result>} */
 const allResults = []
 
-console.log('First fetching %s unscoped packages in bulk', unscoped.length)
+console.log(
+  'First fetching %s unscoped packages in bulk (this’ll take about 6 hours)',
+  unscoped.length
+)
 
 // eslint-disable-next-line no-constant-condition
 while (true) {
@@ -84,6 +76,7 @@ while (true) {
 
   for (key in results) {
     if (Object.hasOwn(results, key)) {
+      // “Thing”s might not be packages, in which case they are set to `null`.
       const value = results[key]
       if (value) {
         clean.push({
@@ -118,53 +111,95 @@ while (true) {
 
 await fs.writeFile(destination, JSON.stringify(allResults, null, 2) + '\n')
 
-console.log('Now fetching %s scoped packages', scoped.length)
+console.log(
+  'Now fetching %s scoped packages (this’ll take about 9 hours)',
+  scoped.length
+)
 
-let index = -1
+// 32 gets rate-limited by npm.
+const scopedSize = 24
+slice = 0
 
-while (++index < scoped.length) {
-  const name = scoped[index]
+// eslint-disable-next-line no-constant-condition
+while (true) {
+  const names = scoped.slice(slice * scopedSize, (slice + 1) * scopedSize)
 
-  const url = new URL(
-    'https://api.npmjs.org/downloads/point/last-week/' +
-      encodeURIComponent(name)
-  )
-  /* eslint-disable no-await-in-loop */
-  const response = await fetch(String(url))
-  const result = /** @type {NpmDownloadResult|NpmDownloadError} */ (
-    await response.json()
-  )
-  /* eslint-enable no-await-in-loop */
-
-  /** @type {Result} */
-  const clean =
-    'error' in result
-      ? {
-          downloads: 0,
-          name,
-          ok: false
-        }
-      : {
-          downloads: result.downloads,
-          name: result.package,
-          ok: true
-        }
-
-  if (index !== 0 && index % 10 === 0) {
-    console.log('at: %s, last: %j', index, clean)
-
-    // Intermediate writes to help debugging and seeing some results early.
-    setTimeout(async () => {
-      await fs.writeFile(
-        destination,
-        JSON.stringify(allResults, null, 2) + '\n'
-      )
-    })
+  if (names.length === 0) {
+    break
   }
 
-  allResults.push(clean)
+  console.log(
+    'fetching page: %s, collected total: %s',
+    slice,
+    allResults.length
+  )
+
+  const promises = names.map(async (name) => {
+    const url = new URL(
+      'https://api.npmjs.org/downloads/point/last-week/' +
+        encodeURIComponent(name)
+    )
+    const response = await fetch(String(url))
+    const result = /** @type {NpmDownloadResult|NpmDownloadError} */ (
+      await response.json()
+    )
+
+    /** @type {Result} */
+    const clean =
+      'error' in result
+        ? {
+            downloads: 0,
+            name,
+            ok: false
+          }
+        : {
+            downloads: result.downloads,
+            name: result.package,
+            ok: true
+          }
+
+    return clean
+  })
+
+  /** @type {Array<Result>} */
+  let cleanResults
+
+  /* eslint-disable no-await-in-loop */
+  try {
+    cleanResults = await Promise.all(promises)
+  } catch (error) {
+    console.log(error)
+    console.log('sleepingfor 10s…')
+    await sleep(10 * 1000)
+    continue
+  }
+  /* eslint-enable no-await-in-loop */
+
+  allResults.push(...cleanResults)
+
+  // Intermediate writes to help debugging and seeing some results early.
+  setTimeout(async () => {
+    await fs.writeFile(destination, JSON.stringify(allResults, null, 2) + '\n')
+  })
+
+  const tail = allResults[allResults.length - 1]
+  if (tail) {
+    console.log('  last: %j', tail)
+  }
+
+  slice++
 }
 
 await fs.writeFile(destination, JSON.stringify(allResults, null, 2) + '\n')
 
 console.log('done!')
+
+/**
+ * @param {number} ms
+ * @returns {Promise<void>}
+ */
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), ms)
+  })
+}

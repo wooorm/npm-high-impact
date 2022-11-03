@@ -2,7 +2,7 @@
   "name": "npm-high-impact",
   "private": true,
   "version": "0.0.0",
-  "description": "To do",
+  "description": "The high-impact (popular) packages of npm",
   "license": "MIT",
   "keywords": [
     "npm",
@@ -23,12 +23,15 @@
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
+    "lib/",
     "index.d.ts",
     "index.js"
   ],
   "devDependencies": {
     "@types/node": "^18.0.0",
     "c8": "^7.0.0",
+    "changes-stream": "^2.0.0",
+    "node-fetch": "^3.0.0",
     "prettier": "^2.0.0",
     "remark-cli": "^11.0.0",
     "remark-preset-wooorm": "^9.0.0",
@@ -65,8 +68,5 @@
     "atLeast": 100,
     "detail": true,
     "strict": true
-  },
-  "dependencies": {
-    "node-fetch": "^3.2.10"
   }
 }

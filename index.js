@@ -1,2 +1,1 @@
-// To do.
-console.log(1)
+export {npmHighImpact, npmTopDependents, npmTopDownloads} from './lib/index.js'
