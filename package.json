@@ -6,7 +6,9 @@
   "license": "MIT",
   "keywords": [
     "npm",
-    "popular"
+    "popular",
+    "high",
+    "impact"
   ],
   "repository": "wooorm/npm-high-impact",
   "bugs": "https://github.com/wooorm/npm-high-impact/issues",
