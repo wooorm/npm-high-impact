@@ -51,14 +51,14 @@ npm install npm-high-impact
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {npmHighImpact} from 'https://esm.sh/npm-high-impact@0'
+import {npmHighImpact} from 'https://esm.sh/npm-high-impact@1'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {npmHighImpact} from 'https://esm.sh/npm-high-impact@0?bundle'
+  import {npmHighImpact} from 'https://esm.sh/npm-high-impact@1?bundle'
 </script>
 ```
 
