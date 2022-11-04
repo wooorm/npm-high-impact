@@ -169,7 +169,7 @@ while (true) {
     cleanResults = await Promise.all(promises)
   } catch (error) {
     console.log(error)
-    console.log('sleepingfor 10s…')
+    console.log('sleeping for 10s…')
     await sleep(10 * 1000)
     continue
   }
