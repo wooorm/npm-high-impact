@@ -134,9 +134,10 @@ changes to things in the npm registry.
 We filter duplicates out, but still end up with ±2.5m “things”, which aren’t
 all proper packages.
 Later scripts will have to deal with them being missing.
-The script takes like xx hours to run.
 
-<!-- To do: update `xx` above -->
+The script takes like 12-18 hours to run (it finished somewhere at night).
+But the good news is that it’s additive: so the next time you run it, it’ll
+only pull in everything that changed since you last ran in.
 
 It crawls [`replicate.npmjs.com`][npm-replicate].
 
