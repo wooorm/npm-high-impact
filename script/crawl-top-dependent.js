@@ -32,9 +32,20 @@
  */
 
 import fs from 'node:fs/promises'
+import process from 'node:process'
 import fetch from 'node-fetch'
+import dotenv from 'dotenv'
 
-const key = 'xxx'
+dotenv.config()
+
+const key = process.env.LIO_TOKEN
+
+if (!key) {
+  throw new Error(
+    'Missing `LIO_TOKEN` (Libraries IO token) in env, please add a `.env` file with it'
+  )
+}
+
 // Stop when packages are depended on by less than this number of packages.
 const min = 500
 const destination = new URL('../data/top-dependent.json', import.meta.url)
