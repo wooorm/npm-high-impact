@@ -72,7 +72,7 @@ console.log(npmHighImpact)
 ```
 
 ```js
-6039
+6050
 [
   'supports-color',
   'semver',
