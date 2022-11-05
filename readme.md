@@ -18,6 +18,7 @@ The high-impact (popular) packages of npm.
     *   [`npmTopDependents`](#npmtopdependents)
     *   [`npmTopDownloads`](#npmtopdownloads)
 *   [Data](#data)
+*   [Scripts](#scripts)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
 *   [Contribute](#contribute)
@@ -110,6 +111,13 @@ List of package names that are downloaded a lot (`Array<string>`).
 Sorted by most downloaded first.
 
 ## Data
+
+> 👉 **Note**: not all of these packages are popular.
+> There are some false-positives, such that download counts can be gamed, and
+> that `libraries.io` sometimes thinks that a fork of webpack or so is actually
+> webpack.
+
+## Scripts
 
 This repo includes several scripts to crawl different services.
 
