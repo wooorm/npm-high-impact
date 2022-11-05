@@ -21,6 +21,7 @@ The high-impact (popular) packages of npm.
 *   [Scripts](#scripts)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
+*   [Related](#related)
 *   [Contribute](#contribute)
 *   [Security](#security)
 *   [License](#license)
@@ -174,6 +175,13 @@ It exports no additional types.
 This package is at least compatible with all maintained versions of Node.js.
 As of now, that is Node.js 14.14+, 16.0+, and 18.0+.
 It also works in Deno and modern browsers.
+
+## Related
+
+*   [`npm-high-impact-cli`](https://github.com/rexxars/npm-high-impact-cli)
+    — find the popular npm packages someone maintains
+*   [`npm-esm-vs-cjs`](https://github.com/wooorm/npm-esm-vs-cjs)
+    — data on the share of ESM vs CJS on the public npm registry
 
 ## Contribute
 
