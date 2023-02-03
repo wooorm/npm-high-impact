@@ -44,7 +44,7 @@ Please use this for fun experiments when researching the npm registry.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+, 16.0+), install with [npm][]:
+In Node.js (version 14.14+ and 16.0+), install with [npm][]:
 
 ```sh
 npm install npm-high-impact
@@ -91,8 +91,9 @@ console.log(npmHighImpact)
 
 ## API
 
-This package exports the identifiers `npmHighImpact`, `npmTopDependents`, and
-`npmTopDownloads`.
+This package exports the identifiers [`npmHighImpact`][api-npm-high-impact],
+[`npmTopDependents`][api-npm-top-dependents], and
+[`npmTopDownloads`][api-npm-top-downloads].
 There is no default export.
 
 ### `npmHighImpact`
@@ -235,3 +236,9 @@ This package is safe.
 [npm-api]: https://github.com/npm/registry/blob/master/docs/download-counts.md
 
 [npm-replicate]: https://github.com/npm/registry-follower-tutorial/blob/master/README.md
+
+[api-npm-high-impact]: #npmhighimpact
+
+[api-npm-top-dependents]: #npmtopdependents
+
+[api-npm-top-downloads]: #npmtopdownloads
