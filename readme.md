@@ -125,7 +125,7 @@ This repo includes several scripts to crawl different services.
 
 ###### Top dependents
 
-`script/crawl-top-dependents.js` looks for packages that are depended on by
+`script/crawl-top-dependent.js` looks for packages that are depended on by
 500 or more other packages.
 The script takes like 30 minutes to run and currently gets about 3 000
 packages.
@@ -153,7 +153,7 @@ It crawls [`replicate.npmjs.com`][npm-replicate].
 
 ###### Top downloads
 
-`script/crawl-top-downloads.js` looks for download counts of all ±2.5m packages
+`script/crawl-top-download.js` looks for download counts of all ±2.5m packages
 on the registry.
 Later scripts can filter the complete list to get the top packages.
 The script takes like 15 hours to run.
