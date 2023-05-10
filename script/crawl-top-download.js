@@ -17,7 +17,7 @@
  */
 
 import fs from 'node:fs/promises'
-import fetch from 'node-fetch'
+import {fetch} from 'undici'
 
 let slice = 0
 const size = 128 // Up to 128 at a time are allowed.

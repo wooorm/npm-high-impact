@@ -14,7 +14,7 @@
 
 import defaultFs, {promises as fs} from 'node:fs'
 import process from 'node:process'
-import fetch from 'node-fetch'
+import {fetch} from 'undici'
 // @ts-expect-error: untyped.
 import ChangesStream from 'changes-stream'
 

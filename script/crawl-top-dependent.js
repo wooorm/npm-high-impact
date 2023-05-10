@@ -33,7 +33,7 @@
 
 import fs from 'node:fs/promises'
 import process from 'node:process'
-import fetch from 'node-fetch'
+import {fetch} from 'undici'
 import dotenv from 'dotenv'
 
 dotenv.config()
