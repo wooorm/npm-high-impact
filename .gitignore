@@ -6,6 +6,7 @@ coverage/
 node_modules/
 yarn.lock
 data/top-dependent.json
-data/download-counts.json
+data/download-counts-scoped.json
+data/download-counts-unscoped.json
 data/sequence.txt
 data/packages.txt

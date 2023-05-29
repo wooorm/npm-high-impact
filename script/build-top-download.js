@@ -5,13 +5,24 @@
 import fs from 'node:fs/promises'
 
 /** @type {Array<Result>} */
-const data = JSON.parse(
+const dataUnscoped = JSON.parse(
   String(
-    await fs.readFile(new URL('../data/download-counts.json', import.meta.url))
+    await fs.readFile(
+      new URL('../data/download-counts-unscoped.json', import.meta.url)
+    )
   )
 )
 
-const result = data
+/** @type {Array<Result>} */
+const dataScoped = JSON.parse(
+  String(
+    await fs.readFile(
+      new URL('../data/download-counts-scoped.json', import.meta.url)
+    )
+  )
+)
+
+const result = [...dataScoped, ...dataUnscoped]
   .filter((d) => d.ok && d.downloads >= 1_000_000)
   .sort((a, b) => b.downloads - a.downloads)
   .map((d) => d.name)

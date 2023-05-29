@@ -6,9 +6,20 @@
 import fs from 'node:fs/promises'
 
 /** @type {Array<DownloadResult>} */
-const downloads = JSON.parse(
+const downloadsScoped = JSON.parse(
   String(
-    await fs.readFile(new URL('../data/download-counts.json', import.meta.url))
+    await fs.readFile(
+      new URL('../data/download-counts-scoped.json', import.meta.url)
+    )
+  )
+)
+
+/** @type {Array<DownloadResult>} */
+const downloadsUnscoped = JSON.parse(
+  String(
+    await fs.readFile(
+      new URL('../data/download-counts-unscoped.json', import.meta.url)
+    )
   )
 )
 
@@ -25,6 +36,7 @@ console.log('top (deps): %s', dependentTop.length)
 
 /** @type {Array<DownloadResult>} */
 const top = []
+const downloads = [...downloadsScoped, ...downloadsUnscoped]
 
 for (const d of downloads) {
   const index = dependentTop.indexOf(d.name)

@@ -1,6 +1,4 @@
 /**
- * @typedef {Record<string, NpmDownloadResult|null>} NpmDownloadBulkResult
- *
  * @typedef NpmDownloadResult
  * @property {number} downloads
  * @property {string} package
@@ -20,20 +18,18 @@ import fs from 'node:fs/promises'
 import {fetch} from 'undici'
 
 let slice = 0
-const size = 128 // Up to 128 at a time are allowed.
-const destination = new URL('../data/download-counts.json', import.meta.url)
+const destination = new URL(
+  '../data/download-counts-scoped.json',
+  import.meta.url
+)
 const input = new URL('../data/packages.txt', import.meta.url)
 const allTheNames = String(await fs.readFile(input)).split('\n')
-/** @type {Array<string>} */
-const unscoped = []
 /** @type {Array<string>} */
 const scoped = []
 
 for (const name of allTheNames) {
   if (name.charAt(0) === '@') {
     scoped.push(name)
-  } else {
-    unscoped.push(name)
   }
 }
 
@@ -41,78 +37,7 @@ for (const name of allTheNames) {
 const allResults = []
 
 console.log(
-  'First fetching %s unscoped packages in bulk (this’ll take about 6 hours)',
-  unscoped.length
-)
-
-// eslint-disable-next-line no-constant-condition
-while (true) {
-  const names = unscoped.slice(slice * size, (slice + 1) * size)
-
-  if (names.length === 0) {
-    break
-  }
-
-  console.log(
-    'fetching page: %s, collected total: %s',
-    slice,
-    allResults.length
-  )
-
-  const url = new URL(
-    'https://api.npmjs.org/downloads/point/last-week/' +
-      names.map((d) => encodeURIComponent(d)).join(',')
-  )
-
-  /* eslint-disable no-await-in-loop */
-  const response = await fetch(String(url))
-  const results = /** @type {NpmDownloadBulkResult} */ (await response.json())
-  /* eslint-enable no-await-in-loop */
-
-  /** @type {Array<Result>} */
-  const clean = []
-  /** @type {string} */
-  let key
-
-  for (key in results) {
-    if (Object.hasOwn(results, key)) {
-      // “Thing”s might not be packages, in which case they are set to `null`.
-      const value = results[key]
-      if (value) {
-        clean.push({
-          downloads: value.downloads,
-          name: value.package,
-          ok: true
-        })
-      } else {
-        clean.push({
-          downloads: 0,
-          name: key,
-          ok: false
-        })
-      }
-    }
-  }
-
-  const tail = clean[clean.length - 1]
-  if (tail) {
-    console.log('  last: %j', tail)
-  }
-
-  allResults.push(...clean)
-
-  // Intermediate writes to help debugging and seeing some results early.
-  setTimeout(async () => {
-    await fs.writeFile(destination, JSON.stringify(allResults, null, 2) + '\n')
-  })
-
-  slice++
-}
-
-await fs.writeFile(destination, JSON.stringify(allResults, null, 2) + '\n')
-
-console.log(
-  'Now fetching %s scoped packages (this’ll take about 9 hours)',
+  'Fetching %s scoped packages (this’ll take about 9 hours)',
   scoped.length
 )
 
@@ -129,7 +54,7 @@ while (true) {
   }
 
   console.log(
-    'fetching page: %s, collected total: %s',
+    'fetching scoped page: %s, collected total: %s',
     slice,
     allResults.length
   )
