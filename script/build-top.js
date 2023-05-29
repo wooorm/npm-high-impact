@@ -1,6 +1,6 @@
 /**
  * @typedef {import('./crawl-top-dependent.js').Result} DependentResult
- * @typedef {import('./crawl-top-download.js').Result} DownloadResult
+ * @typedef {import('./crawl-top-download-unscoped.js').Result} DownloadResult
  */
 
 import fs from 'node:fs/promises'

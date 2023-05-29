@@ -153,12 +153,13 @@ It crawls [`replicate.npmjs.com`][npm-replicate].
 
 ###### Top downloads
 
-`script/crawl-top-download.js` looks for download counts of all ±2.5m packages
-on the registry.
+`script/crawl-top-download-unscoped.js` and
+`script/crawl-top-download-scoped.js` look for download counts of all ±2.5m
+packages on the registry.
 Later scripts can filter the complete list to get the top packages.
-The script takes like 15 hours to run.
-About 6 hours is spent on ±1.9m unscoped packages.
-The other 9 on the ±600k scoped packages (yes, sad).
+The script takes like 20 hours to run.
+About 10 hours is spent on ±2.7m unscoped packages.
+Another 10 or so on ±600k scoped packages (yes, sad).
 After filtering, the interesting data would result in about 6k packages.
 
 It crawls the npm [package download count API][npm-api].
@@ -174,7 +175,7 @@ It exports no additional types.
 ## Compatibility
 
 This package is at least compatible with all maintained versions of Node.js.
-As of now, that is Node.js 14.14+ and 16.0+.
+As of now, that is Node.js 16+.
 It also works in Deno and modern browsers.
 
 ## Related

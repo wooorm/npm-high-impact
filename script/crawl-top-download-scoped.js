@@ -1,17 +1,9 @@
 /**
- * @typedef NpmDownloadResult
- * @property {number} downloads
- * @property {string} package
- * @property {string} start
- * @property {string} end
+ * @typedef {import('./crawl-top-download-unscoped.js').Result} Result
+ * @typedef {import('./crawl-top-download-unscoped.js').NpmDownloadResult} NpmDownloadResult
  *
  * @typedef NpmDownloadError
  * @property {string} error
- *
- * @typedef Result
- * @property {number} downloads
- * @property {string} name
- * @property {boolean} ok
  */
 
 import fs from 'node:fs/promises'
@@ -65,7 +57,7 @@ while (true) {
         encodeURIComponent(name)
     )
     const response = await fetch(String(url))
-    const result = /** @type {NpmDownloadResult|NpmDownloadError} */ (
+    const result = /** @type {NpmDownloadResult | NpmDownloadError} */ (
       await response.json()
     )
 
