@@ -44,7 +44,7 @@ Please use this for fun experiments when researching the npm registry.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+ and 16.0+), install with [npm][]:
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install npm-high-impact
@@ -74,17 +74,17 @@ console.log(npmHighImpact)
 ```
 
 ```js
-6050
+7007
 [
-  'supports-color',
   'semver',
   'ansi-styles',
+  'supports-color',
   'chalk',
+  'tslib',
   'debug',
-  'ms',
   'has-flag',
-  'source-map',
-  'color-name',
+  'ms',
+  'color-convert',
   // …
 ]
 ```
@@ -99,17 +99,20 @@ There is no default export.
 ### `npmHighImpact`
 
 List of top package names (`Array<string>`).
+
 Sorted by most downloaded first.
 Includes (unique) packages from `npmTopDependents` and `npmTopDownloads`.
 
 ### `npmTopDependents`
 
 List of package names that are depended on a lot (`Array<string>`).
+
 Sorted by most dependents first.
 
 ### `npmTopDownloads`
 
 List of package names that are downloaded a lot (`Array<string>`).
+
 Sorted by most downloaded first.
 
 ## Data
@@ -157,7 +160,7 @@ It crawls [`replicate.npmjs.com`][npm-replicate].
 `script/crawl-top-download-scoped.js` look for download counts of all ±2.5m
 packages on the registry.
 Later scripts can filter the complete list to get the top packages.
-The script takes like 20 hours to run.
+The script takes like 30 hours to run.
 About 10 hours is spent on ±2.7m unscoped packages.
 Another 10 or so on ±600k scoped packages (yes, sad).
 After filtering, the interesting data would result in about 6k packages.
@@ -212,7 +215,7 @@ This package is safe.
 
 [downloads]: https://www.npmjs.com/package/npm-high-impact
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/npm-high-impact.svg
+[size-badge]: https://img.shields.io/bundlejs/size/npm-high-impact
 
 [size]: https://bundlephobia.com/result?p=npm-high-impact
 
