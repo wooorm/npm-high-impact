@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import {npmHighImpact, npmTopDependents, npmTopDownloads} from './index.js'
+import {npmHighImpact, npmTopDependents, npmTopDownloads} from 'npm-high-impact'
 
 test('npmHighImpact', function () {
   assert(Array.isArray(npmHighImpact), 'should be a list')
