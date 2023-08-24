@@ -39,7 +39,7 @@ const allResults = []
 let previousFailed = false
 
 console.log(
-  'Fetching %s unscoped packages in bulk (this’ll take about 6 hours)',
+  'Fetching %s unscoped packages in bulk (this’ll take about 8 hours)',
   unscoped.length
 )
 
