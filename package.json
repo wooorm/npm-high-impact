@@ -21,7 +21,10 @@
   ],
   "sideEffects": false,
   "type": "module",
-  "exports": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "files": [
     "lib/",
     "index.d.ts",
