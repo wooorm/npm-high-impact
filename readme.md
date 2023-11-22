@@ -74,11 +74,11 @@ console.log(npmHighImpact)
 ```
 
 ```js
-7007
+7204
 [
-  'semver',
   'ansi-styles',
   'supports-color',
+  'semver',
   'chalk',
   'tslib',
   'debug',
@@ -157,12 +157,12 @@ It crawls [`replicate.npmjs.com`][npm-replicate].
 ###### Top downloads
 
 `script/crawl-top-download-unscoped.js` and
-`script/crawl-top-download-scoped.js` look for download counts of all ±2.5m
+`script/crawl-top-download-scoped.js` look for download counts of all ±4.1m
 packages on the registry.
 Later scripts can filter the complete list to get the top packages.
 The script takes like 30 hours to run.
-About 10 hours is spent on ±2.7m unscoped packages.
-Another 10 or so on ±600k scoped packages (yes, sad).
+About 10 hours is spent on ±3.2m unscoped packages.
+Another 8 or so on ±900k scoped packages (yes, sad).
 After filtering, the interesting data would result in about 6k packages.
 
 It crawls the npm [package download count API][npm-api].
