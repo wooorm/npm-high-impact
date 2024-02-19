@@ -19,7 +19,7 @@ import {fetch} from 'undici'
 import ChangesStream from 'changes-stream'
 
 // The npm database.
-const db = 'https://replicate.npmjs.com'
+const database = 'https://replicate.npmjs.com'
 
 let start = 0
 let current = 0
@@ -44,16 +44,16 @@ try {
   )
 } catch {}
 
-const dbResponse = await fetch(db)
-const dbResult = /** @type {Database} */ (await dbResponse.json())
-const end = dbResult.update_seq
+const databaseResponse = await fetch(database)
+const databaseResult = /** @type {Database} */ (await databaseResponse.json())
+const end = databaseResult.update_seq
 console.log('ending at: %s', end)
 
 process.on('exit', teardown)
 process.on('SIGINT', teardown)
 
 /** @type {Readable} */
-const stream = new ChangesStream({since: start, db})
+const stream = new ChangesStream({since: start, db: database})
 
 stream.on('data', function (/** @type {Change} */ change) {
   current = change.seq
