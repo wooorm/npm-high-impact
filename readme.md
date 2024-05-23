@@ -9,22 +9,22 @@ The high-impact (popular) packages of npm.
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When should I use this?](#when-should-i-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`npmHighImpact`](#npmhighimpact)
-    *   [`npmTopDependents`](#npmtopdependents)
-    *   [`npmTopDownloads`](#npmtopdownloads)
-*   [Data](#data)
-*   [Scripts](#scripts)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Related](#related)
-*   [Contribute](#contribute)
-*   [Security](#security)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When should I use this?](#when-should-i-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`npmHighImpact`](#npmhighimpact)
+  * [`npmTopDependents`](#npmtopdependents)
+  * [`npmTopDownloads`](#npmtopdownloads)
+* [Data](#data)
+* [Scripts](#scripts)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Related](#related)
+* [Contribute](#contribute)
+* [Security](#security)
+* [License](#license)
 
 ## What is this?
 
@@ -34,8 +34,8 @@ The definition of the term *popular* here is the same as what npm itself calls
 They classify packages as having a high impact on the ecosystem when a package
 meets one or more of the following conditions:
 
-*   download count of 1 000 000 or more per week
-*   depended on by 500 or more other packages
+* download count of 1 000 000 or more per week
+* depended on by 500 or more other packages
 
 ## When should I use this?
 
@@ -183,10 +183,10 @@ It also works in Deno and modern browsers.
 
 ## Related
 
-*   [`npm-high-impact-cli`](https://github.com/rexxars/npm-high-impact-cli)
-    — find the popular npm packages someone maintains
-*   [`npm-esm-vs-cjs`](https://github.com/wooorm/npm-esm-vs-cjs)
-    — data on the share of ESM vs CJS on the public npm registry
+* [`npm-high-impact-cli`](https://github.com/rexxars/npm-high-impact-cli)
+  — find the popular npm packages someone maintains
+* [`npm-esm-vs-cjs`](https://github.com/wooorm/npm-esm-vs-cjs)
+  — data on the share of ESM vs CJS on the public npm registry
 
 ## Contribute
 
