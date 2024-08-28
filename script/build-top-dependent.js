@@ -1,5 +1,5 @@
 /**
- * @typedef {import('./crawl-top-dependent.js').Result} Result
+ * @import {Result} from './crawl-top-dependent.js'
  */
 
 import fs from 'node:fs/promises'

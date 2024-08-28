@@ -1,6 +1,8 @@
 /**
- * @typedef {import('node:stream').Readable} Readable
- *
+ * @import {Readable} from 'node:stream'
+ */
+
+/**
  * @typedef Database
  * @property {number} update_seq
  *

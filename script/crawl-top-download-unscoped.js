@@ -1,4 +1,8 @@
 /**
+ * @import {Response} from 'undici'
+ */
+
+/**
  * @typedef {Record<string, NpmDownloadResult | null>} NpmDownloadBulkResult
  *
  * @typedef NpmDownloadResult
@@ -63,7 +67,7 @@ while (true) {
   )
 
   /* eslint-disable no-await-in-loop */
-  /** @type {import('undici').Response | undefined} */
+  /** @type {Response | undefined} */
   let response
   /** @type {NpmDownloadBulkResult} */
   let results

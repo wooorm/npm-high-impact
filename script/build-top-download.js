@@ -1,5 +1,5 @@
 /**
- * @typedef {import('./crawl-top-download-scoped.js').Result} Result
+ * @import {Result} from './crawl-top-download-unscoped.js'
  */
 
 import fs from 'node:fs/promises'

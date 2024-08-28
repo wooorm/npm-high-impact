@@ -1,7 +1,8 @@
 /**
- * @typedef {import('./crawl-top-download-unscoped.js').Result} Result
- * @typedef {import('./crawl-top-download-unscoped.js').NpmDownloadResult} NpmDownloadResult
- *
+ * @import {NpmDownloadResult, Result} from './crawl-top-download-unscoped.js'
+ */
+
+/**
  * @typedef NpmDownloadError
  * @property {string} error
  */
