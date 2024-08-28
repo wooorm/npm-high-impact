@@ -74,15 +74,15 @@ console.log(npmHighImpact)
 ```
 
 ```js
-7448
+8133
 [
   'ansi-styles',
-  'semver',
   'supports-color',
+  'semver',
   'chalk',
-  'tslib',
   'debug',
   'has-flag',
+  'tslib',
   'color-convert',
   'color-name',
   'ms',
