@@ -127,20 +127,6 @@ Sorted by most downloaded first.
 
 This repo includes several scripts to crawl different services.
 
-###### Top dependents
-
-`script/crawl-top-dependent.js` looks for packages that are depended on by
-500 or more other packages.
-The script takes like 30 minutes to run and currently gets about 3 000
-packages.
-
-It crawls the `libraries.io` [project search API][libraries-io-api], whose
-results can also [be browsed on the web][libraries-io-web].
-Crawling stops paginating when a package is seen that is depended on by less
-than 500 other packages.
-
-You need an API key for `libraries.io`, see their API docs for more info.
-
 ###### All packages
 
 `script/crawl-packages.js` follows an append-only database to find all the
@@ -170,6 +156,20 @@ It crawls the npm [package download count API][npm-api].
 Unscoped packages are crawled using the batch API to get 128 per request.
 Scoped packages are crawled with 20 HTTP requests at a time, as there is no
 batch API, and higher rates are limited by npm.
+
+###### Top dependents
+
+`script/crawl-top-dependent.js` looks for packages that are depended on by
+500 or more other packages.
+The script takes like 30 minutes to run and currently gets about 3 000
+packages.
+
+It crawls the `libraries.io` [project search API][libraries-io-api], whose
+results can also [be browsed on the web][libraries-io-web].
+Crawling stops paginating when a package is seen that is depended on by less
+than 500 other packages.
+
+You need an API key for `libraries.io`, see their API docs for more info.
 
 ## Types
 
