@@ -1,32 +1,8 @@
 {
-  "name": "npm-high-impact",
-  "version": "1.8.0",
-  "description": "The high-impact (popular) packages of npm",
-  "license": "MIT",
-  "keywords": [
-    "high",
-    "impact",
-    "npm",
-    "popular"
-  ],
-  "repository": "wooorm/npm-high-impact",
-  "bugs": "https://github.com/wooorm/npm-high-impact/issues",
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/wooorm"
-  },
   "author": "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
+  "bugs": "https://github.com/wooorm/npm-high-impact/issues",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
-  ],
-  "sideEffects": false,
-  "type": "module",
-  "exports": "./index.js",
-  "files": [
-    "lib/",
-    "index.d.ts.map",
-    "index.d.ts",
-    "index.js"
   ],
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -41,14 +17,26 @@
     "undici": "^6.0.0",
     "xo": "^0.59.0"
   },
-  "scripts": {
-    "build": "tsc --build --clean && tsc --build && type-coverage",
-    "format": "remark . --frail --output --quiet && prettier . --log-level warn --write && xo --fix",
-    "prepack": "npm run build && npm run format",
-    "test": "npm run build && npm run format && npm run test-coverage",
-    "test-api": "node --conditions development test.js",
-    "test-coverage": "c8 --100 --check-coverage --reporter lcov npm run test-api"
+  "description": "The high-impact (popular) packages of npm",
+  "exports": "./index.js",
+  "files": [
+    "index.d.ts.map",
+    "index.d.ts",
+    "index.js",
+    "lib/"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wooorm"
   },
+  "keywords": [
+    "high",
+    "impact",
+    "npm",
+    "popular"
+  ],
+  "license": "MIT",
+  "name": "npm-high-impact",
   "prettier": {
     "bracketSpacing": false,
     "singleQuote": true,
@@ -62,12 +50,21 @@
       "remark-preset-wooorm"
     ]
   },
+  "repository": "wooorm/npm-high-impact",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build && type-coverage",
+    "format": "remark --frail --output --quiet -- . && prettier --log-level warn --write -- . && xo --fix",
+    "test-api": "node --conditions development test.js",
+    "test-coverage": "c8 --100 --reporter lcov -- npm run test-api",
+    "test": "npm run build && npm run format && npm run test-coverage"
+  },
+  "sideEffects": false,
   "typeCoverage": {
     "atLeast": 100,
-    "detail": true,
-    "ignoreCatch": true,
     "strict": true
   },
+  "type": "module",
+  "version": "1.8.0",
   "xo": {
     "prettier": true,
     "rules": {
