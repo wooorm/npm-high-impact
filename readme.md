@@ -44,7 +44,8 @@ Please use this for fun experiments when researching the npm registry.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 16+), install with [npm][]:
+In Node.js (version 16+),
+install with [npm][]:
 
 ```sh
 npm install npm-high-impact
@@ -93,8 +94,8 @@ console.log(npmHighImpact)
 ## API
 
 This package exports the identifiers [`npmHighImpact`][api-npm-high-impact],
-[`npmTopDependents`][api-npm-top-dependents], and
-[`npmTopDownloads`][api-npm-top-downloads].
+[`npmTopDependents`][api-npm-top-dependents],
+and [`npmTopDownloads`][api-npm-top-downloads].
 There is no default export.
 
 ### `npmHighImpact`
@@ -118,10 +119,12 @@ Sorted by most downloaded first.
 
 ## Data
 
-> 👉 **Note**: not all of these packages are popular.
-> There are some false-positives, such that download counts can be gamed, and
-> that `libraries.io` sometimes thinks that a fork of webpack or so is actually
-> webpack.
+> 👉 **Note**:
+> not all of these packages are popular.
+> There are some false-positives,
+> such that download counts can be gamed,
+> and that `libraries.io` sometimes thinks that a fork of webpack or so is
+> actually webpack.
 
 ## Scripts
 
@@ -129,47 +132,63 @@ This repo includes several scripts to crawl different services.
 
 ###### All packages
 
-`script/crawl-packages.js` follows an append-only database to find all the
-changes to things in the npm registry.
-We filter duplicates out, but still end up with ±2.5m “things”, which aren’t
-all proper packages.
+```sh
+node script/crawl-packages.js
+```
+
+…follows an append-only database to find all the changes to things in the npm
+registry.
+We filter duplicates out,
+but still end up with ±2.5m “things”,
+which aren’t all proper packages.
 Later scripts will have to deal with them being missing.
 
 The script takes like 12-18 hours to run (it finished somewhere at night).
-But the good news is that it’s additive: so the next time you run it, it’ll
-only pull in everything that changed since you last ran in.
+But the good news is that it’s additive:
+so the next time you run it,
+it’ll only pull in everything that changed since you last ran in.
 
 It crawls [`replicate.npmjs.com`][npm-replicate].
 
 ###### Top downloads
 
-`script/crawl-top-download-unscoped.js` and
-`script/crawl-top-download-scoped.js` look for download counts of all ±4.1m
-packages on the registry.
+```sh
+node script/crawl-top-download-unscoped.js
+node script/crawl-top-download-scoped.js
+```
+
+…look for download counts of all ±4.1m packages on the registry.
 Later scripts can filter the complete list to get the top packages.
 The script takes like 30 hours to run.
 About 10 hours is spent on ±3.2m unscoped packages.
-Another 8 or so on ±900k scoped packages (yes, sad).
-After filtering, the interesting data would result in about 6k packages.
+Another 8 or so on ±900k scoped packages (yes,
+sad).
+After filtering,
+the interesting data would result in about 6k packages.
 
 It crawls the npm [package download count API][npm-api].
 Unscoped packages are crawled using the batch API to get 128 per request.
-Scoped packages are crawled with 20 HTTP requests at a time, as there is no
-batch API, and higher rates are limited by npm.
+Scoped packages are crawled with 20 HTTP requests at a time,
+as there is no batch API,
+and higher rates are limited by npm.
 
 ###### Top dependents
 
-`script/crawl-top-dependent.js` looks for packages that are depended on by
-500 or more other packages.
+```sh
+node script/crawl-top-dependent.js
+```
+
+…looks for packages that are depended on by 500 or more other packages.
 The script takes like 30 minutes to run and currently gets about 3 000
 packages.
 
-It crawls the `libraries.io` [project search API][libraries-io-api], whose
-results can also [be browsed on the web][libraries-io-web].
+It crawls the `libraries.io` [project search API][libraries-io-api],
+whose results can also [be browsed on the web][libraries-io-web].
 Crawling stops paginating when a package is seen that is depended on by less
 than 500 other packages.
 
-You need an API key for `libraries.io`, see their API docs for more info.
+You need an API key for `libraries.io`,
+see their API docs for more info.
 
 ## Types
 
@@ -179,7 +198,8 @@ It exports no additional types.
 ## Compatibility
 
 This package is at least compatible with all maintained versions of Node.js.
-As of now, that is Node.js 16+.
+As of now,
+that is Node.js 16+.
 It also works in Deno and modern browsers.
 
 ## Related
