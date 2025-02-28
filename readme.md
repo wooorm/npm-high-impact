@@ -1,9 +1,9 @@
 # npm-high-impact
 
-[![Build][build-badge]][build]
-[![Coverage][coverage-badge]][coverage]
-[![Downloads][downloads-badge]][downloads]
-[![Size][size-badge]][size]
+[![Build][badge-build-image]][badge-build-url]
+[![Coverage][badge-coverage-image]][badge-coverage-url]
+[![Downloads][badge-downloads-image]][badge-downloads-url]
+[![Size][badge-size-image]][badge-size-url]
 
 The high-impact (popular) packages of npm.
 
@@ -43,9 +43,9 @@ Please use this for fun experiments when researching the npm registry.
 
 ## Install
 
-This package is [ESM only][esm].
+This package is [ESM only][github-gist-esm].
 In Node.js (version 16+),
-install with [npm][]:
+install with [npm][npmjs-install]:
 
 ```sh
 npm install npm-high-impact
@@ -149,7 +149,7 @@ so the next time you run it,
 it’ll only pull in everything that changed since you last ran in,
 which could be as little as 15 minutes for 3 months.
 
-It crawls [`replicate.npmjs.com`][npm-replicate].
+It crawls [`replicate.npmjs.com`][github-npm-replicate].
 
 ###### Top downloads
 
@@ -167,7 +167,7 @@ sad).
 After filtering,
 the interesting data would result in about 6k packages.
 
-It crawls the npm [package download count API][npm-api].
+It crawls the npm [package download count API][github-npm-api].
 Unscoped packages are crawled using the batch API to get 128 per request.
 Scoped packages are crawled with 20 HTTP requests at a time,
 as there is no batch API,
@@ -213,7 +213,7 @@ It also works in Deno and modern browsers.
 ## Contribute
 
 Yes please!
-See [How to Contribute to Open Source][contribute].
+See [*How to Contribute to Open Source*][opensource-guide-contribute].
 
 ## Security
 
@@ -221,50 +221,50 @@ This package is safe.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][file-license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
-
-[build-badge]: https://github.com/wooorm/npm-high-impact/workflows/main/badge.svg
-
-[build]: https://github.com/wooorm/npm-high-impact/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/wooorm/npm-high-impact.svg
-
-[coverage]: https://codecov.io/github/wooorm/npm-high-impact
-
-[downloads-badge]: https://img.shields.io/npm/dm/npm-high-impact.svg
-
-[downloads]: https://www.npmjs.com/package/npm-high-impact
-
-[size-badge]: https://img.shields.io/bundlejs/size/npm-high-impact
-
-[size]: https://bundlephobia.com/result?p=npm-high-impact
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[esmsh]: https://esm.sh
-
-[typescript]: https://www.typescriptlang.org
-
-[contribute]: https://opensource.guide/how-to-contribute/
-
-[license]: license
-
-[author]: https://wooorm.com
-
-[libraries-io-api]: https://libraries.io/api#project-search
-
-[libraries-io-web]: https://libraries.io/search?platforms=npm&sort=dependents_count&order=desc
-
-[npm-api]: https://github.com/npm/registry/blob/master/docs/download-counts.md
-
-[npm-replicate]: https://github.com/npm/registry-follower-tutorial/blob/master/README.md
 
 [api-npm-high-impact]: #npmhighimpact
 
 [api-npm-top-dependents]: #npmtopdependents
 
 [api-npm-top-downloads]: #npmtopdownloads
+
+[badge-build-image]: https://github.com/wooorm/npm-high-impact/workflows/main/badge.svg
+
+[badge-build-url]: https://github.com/wooorm/npm-high-impact/actions
+
+[badge-coverage-image]: https://img.shields.io/codecov/c/github/wooorm/npm-high-impact.svg
+
+[badge-coverage-url]: https://codecov.io/github/wooorm/npm-high-impact
+
+[badge-downloads-image]: https://img.shields.io/npm/dm/npm-high-impact.svg
+
+[badge-downloads-url]: https://www.npmjs.com/package/npm-high-impact
+
+[badge-size-image]: https://img.shields.io/bundlejs/size/npm-high-impact
+
+[badge-size-url]: https://bundlejs.com/?q=npm-high-impact
+
+[esmsh]: https://esm.sh
+
+[file-license]: license
+
+[github-gist-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[github-npm-api]: https://github.com/npm/registry/blob/master/docs/download-counts.md
+
+[github-npm-replicate]: https://github.com/npm/registry-follower-tutorial/blob/master/README.md
+
+[libraries-io-api]: https://libraries.io/api#project-search
+
+[libraries-io-web]: https://libraries.io/search?platforms=npm&sort=dependents_count&order=desc
+
+[npmjs-install]: https://docs.npmjs.com/cli/install
+
+[opensource-guide-contribute]: https://opensource.guide/how-to-contribute/
+
+[typescript]: https://www.typescriptlang.org
+
+[wooorm]: https://wooorm.com
