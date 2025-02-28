@@ -26,6 +26,8 @@ const database = 'https://replicate.npmjs.com'
 let start = 0
 let current = 0
 
+await fs.mkdir(new URL('../data', import.meta.url), {recursive: true})
+
 try {
   start = Number.parseInt(
     String(await fs.readFile(new URL('../data/sequence.txt', import.meta.url))),
@@ -55,7 +57,14 @@ process.on('exit', teardown)
 process.on('SIGINT', teardown)
 
 /** @type {Readable} */
-const stream = new ChangesStream({since: start, db: database})
+const stream = new ChangesStream({
+  db: database,
+  // 60 seconds; this defaults to 60 *minutes*, which is ridiculous.
+  inactivity_ms: 60 * 1000, // eslint-disable-line camelcase
+  // 20 seconds; this defaults to 2 minutes.
+  requestTimeout: 20 * 1000,
+  since: start
+})
 
 stream.on('data', function (/** @type {Change} */ change) {
   current = change.seq
