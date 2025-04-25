@@ -9,6 +9,11 @@
 
 import fs from 'node:fs/promises'
 import {fetch} from 'undici'
+import {minimist} from 'minimist'
+
+const argv = minimist(process.argv.slice(2), {
+  default: { time: 'last-week'}
+});
 
 let slice = 0
 const destination = new URL(
@@ -53,7 +58,8 @@ while (true) {
 
   const promises = names.map(async (name) => {
     const url = new URL(
-      'https://api.npmjs.org/downloads/point/last-week/' +
+      'https://api.npmjs.org/downloads/point/' +
+        `${argv.time}/` +
         encodeURIComponent(name)
     )
     const response = await fetch(String(url))
