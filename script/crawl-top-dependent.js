@@ -35,6 +35,7 @@ import fs from 'node:fs/promises'
 import process from 'node:process'
 import {fetch} from 'undici'
 import dotenv from 'dotenv'
+import {argv} from './crawl-top-tools.js'
 
 dotenv.config()
 
@@ -46,13 +47,9 @@ if (!key) {
   )
 }
 
-import { minimist } from 'minimist'
-const argv = minimist(process.argv.slice(2), {
-  default: { min: 500 }
-});
 
 // Stop when packages are depended on by less than this number of packages.
-const { min } = argv
+const {min} = argv
 const destination = new URL('../data/top-dependent.json', import.meta.url)
 let page = 0 // First page is `1`.
 

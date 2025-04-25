@@ -3,7 +3,10 @@ import {Agent,interceptors,setGlobalDispatcher} from 'undici'
 import minimist from 'minimist'
 
 export const argv = minimist(process.argv.slice(2), {
-  default: { time: 'last-week' }
+  default: {
+    time: 'last-week',
+    min: 500,
+  }
 });
 
 export function configure() {
