@@ -21,12 +21,17 @@ import fs from 'node:fs/promises'
 import {fetch} from 'undici'
 import {configure,resume,argv} from './crawl-top-tools.js'
 
-let slice = 0
-const size = 128 // Up to 128 at a time are allowed.
+const maxsize = 128  // Up to 128 at a time are allowed.
 const destination = new URL(
   '../data/download-counts-unscoped.json',
   import.meta.url
 )
+
+let size = maxsize // We start with 128, and reduce if needed.
+let slice = 0
+let start = 0
+let errorless = 0
+
 const input = new URL('../data/packages.txt', import.meta.url)
 const allTheNames = String(await fs.readFile(input)).split('\n')
 
@@ -64,22 +69,36 @@ configure()
 
 // eslint-disable-next-line no-constant-condition
 while (true) {
-  const names = unscoped.slice(slice * size, (slice + 1) * size)
+  const names = unscoped.slice(start, start + size)
+  console.log(
+    'fetching unscoped page: %s { start: %s, size: %s } collected total: %s',
+    slice,
+    start,
+    size,
+    allResults.length
+  )
+
+  const encoded = names.map((d) => encodeURIComponent(d)).join(',')
+  if (encoded.length > 12000) {
+    console.warn('Encoded names length too long: %s', encoded.length)
+    console.warn('Reducing size from %s to %s', size, size / 2)
+    size = Math.floor(size / 2)
+    errorless = 0
+    continue
+  } else if (size < maxsize && errorless > 10) {
+    console.warn('Increase { size: %s } to maxsize { size: %s }', size, maxsize)
+    size = maxsize
+  }
 
   if (names.length === 0) {
     break
   }
 
-  console.log(
-    'fetching unscoped page: %s, collected total: %s',
-    slice,
-    allResults.length
-  )
 
   const url = new URL(
     'https://api.npmjs.org/downloads/point/' +
       `${argv.time}/` +
-      names.map((d) => encodeURIComponent(d)).join(',')
+      encoded
   )
 
   /* eslint-disable no-await-in-loop */
@@ -115,7 +134,7 @@ while (true) {
   } catch (error) {
     // Remark (0): we should probably check the response headers for non-JSON
     // which indicates we are being rate-limited.
-    console.error('Error parsing JSON for %s: %s', name, error)
+    console.error('Error parsing JSON for %s: %s', names.join(','), error)
     console.error('Response text: %s', text)
     process.exit(1)
   }
@@ -162,7 +181,9 @@ while (true) {
     await fs.writeFile(lastpath, JSON.stringify(tail, null, 2) + '\n')
   })
 
+  start += size
   slice++
+  errorless++
 }
 
 await fs.writeFile(destination, JSON.stringify(allResults, null, 2) + '\n')
