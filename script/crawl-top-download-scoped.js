@@ -8,12 +8,23 @@
  */
 
 import fs from 'node:fs/promises'
-import {fetch} from 'undici'
+import {Agent,interceptors,setGlobalDispatcher,fetch} from 'undici'
 import {minimist} from 'minimist'
 
 const argv = minimist(process.argv.slice(2), {
   default: { time: 'last-week'}
 });
+
+// Interceptors to add response caching, DNS caching and retrying to the dispatcher
+const { cache, dns, retry } = interceptors
+
+const defaultDispatcher = new Agent({
+  connections: 100, // Limit concurrent kept-alive connections to not run out of resources
+  headersTimeout: 10_000, // 10 seconds; set as appropriate for the remote servers you plan to connect to
+  bodyTimeout: 10_000,
+}).compose(cache(), dns(), retry())
+
+setGlobalDispatcher(defaultDispatcher) // Add these interceptors to all `fetch` and Undici `request` calls
 
 let slice = 0
 const destination = new URL(
