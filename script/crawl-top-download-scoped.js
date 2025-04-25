@@ -8,7 +8,7 @@
  */
 
 import fs from 'node:fs/promises'
-import {configure,resume,argv} from './crawl-top-tools.js'
+import {configure, resume, argv} from './crawl-top-tools.js'
 
 let slice = 0
 const destination = new URL(
@@ -18,7 +18,7 @@ const destination = new URL(
 const input = new URL('../data/packages.txt', import.meta.url)
 const allTheNames = String(await fs.readFile(input)).split('\n')
 
-const { last, lastpath } = await resume({ type: 'scoped' })
+const {last, lastpath} = await resume({type: 'scoped'})
 let caughtUp = !last
 if (last) {
   console.log('Resume from last package: %s', last.name)
@@ -29,7 +29,7 @@ const scoped = []
 for (const name of allTheNames) {
   if (!caughtUp) {
     caughtUp = name === last.name
-    continue;
+    continue
   }
 
   if (name.charAt(0) === '@') {
@@ -37,9 +37,9 @@ for (const name of allTheNames) {
   }
 }
 
-if (!scoped.length) {
+if (scoped.length === 0) {
   if (last) console.log('No scoped packages found after %s', last.name)
-  process.exit(0);
+  process.exit(0)
 }
 
 /** @type {Array<Result>} */
@@ -77,9 +77,7 @@ while (true) {
         encodeURIComponent(name)
     )
     const response = await fetch(String(url))
-    const text = (
-      await response.text()
-    )
+    const text = await response.text()
 
     /** @type {NpmDownloadResult | NpmDownloadError} */
     let result
