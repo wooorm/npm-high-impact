@@ -19,6 +19,12 @@
 
 import fs from 'node:fs/promises'
 import {fetch} from 'undici'
+import {minimist} from 'minimist'
+
+const argv = minimist(process.argv.slice(2), {
+  default: { time: 'last-week' }
+});
+
 
 let slice = 0
 const size = 128 // Up to 128 at a time are allowed.
@@ -61,7 +67,8 @@ while (true) {
   )
 
   const url = new URL(
-    'https://api.npmjs.org/downloads/point/last-week/' +
+    'https://api.npmjs.org/downloads/point/' +
+      `${argv.time}/` +
       names.map((d) => encodeURIComponent(d)).join(',')
   )
 
