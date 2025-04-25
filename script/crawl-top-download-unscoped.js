@@ -19,9 +19,9 @@
 
 import fs from 'node:fs/promises'
 import {fetch} from 'undici'
-import {configure,resume,argv} from './crawl-top-tools.js'
+import {configure, resume, argv} from './crawl-top-tools.js'
 
-const maxsize = 128  // Up to 128 at a time are allowed.
+const maxsize = 128 // Up to 128 at a time are allowed.
 const destination = new URL(
   '../data/download-counts-unscoped.json',
   import.meta.url
@@ -35,7 +35,7 @@ let errorless = 0
 const input = new URL('../data/packages.txt', import.meta.url)
 const allTheNames = String(await fs.readFile(input)).split('\n')
 
-const { last, lastpath } = await resume({ type: 'unscoped' })
+const {last, lastpath} = await resume({type: 'unscoped'})
 let caughtUp = !last
 if (last) {
   console.log('Resume from last package: %s', last.name)
@@ -46,7 +46,7 @@ const unscoped = []
 for (const name of allTheNames) {
   if (!caughtUp) {
     caughtUp = name === last.name
-    continue;
+    continue
   }
 
   if (name.charAt(0) !== '@') {
@@ -79,7 +79,7 @@ while (true) {
   )
 
   const encoded = names.map((d) => encodeURIComponent(d)).join(',')
-  if (encoded.length > 12000) {
+  if (encoded.length > 12_000) {
     console.warn('Encoded names length too long: %s', encoded.length)
     console.warn('Reducing size from %s to %s', size, size / 2)
     size = Math.floor(size / 2)
@@ -94,11 +94,8 @@ while (true) {
     break
   }
 
-
   const url = new URL(
-    'https://api.npmjs.org/downloads/point/' +
-      `${argv.time}/` +
-      encoded
+    'https://api.npmjs.org/downloads/point/' + `${argv.time}/` + encoded
   )
 
   /* eslint-disable no-await-in-loop */

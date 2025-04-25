@@ -47,7 +47,6 @@ if (!key) {
   )
 }
 
-
 // Stop when packages are depended on by less than this number of packages.
 const {min} = argv
 const destination = new URL('../data/top-dependent.json', import.meta.url)
