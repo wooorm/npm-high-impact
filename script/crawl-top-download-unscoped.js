@@ -19,12 +19,7 @@
 
 import fs from 'node:fs/promises'
 import {fetch} from 'undici'
-import {minimist} from 'minimist'
-
-const argv = minimist(process.argv.slice(2), {
-  default: { time: 'last-week' }
-});
-
+import {configure,resume,argv} from './crawl-top-tools.js'
 
 let slice = 0
 const size = 128 // Up to 128 at a time are allowed.
@@ -34,10 +29,21 @@ const destination = new URL(
 )
 const input = new URL('../data/packages.txt', import.meta.url)
 const allTheNames = String(await fs.readFile(input)).split('\n')
+
+const { last, lastpath } = await resume({ type: 'unscoped' })
+let caughtUp = !last
+if (last) {
+  console.log('Resume from last package: %s', last.name)
+}
+
 /** @type {Array<string>} */
 const unscoped = []
-
 for (const name of allTheNames) {
+  if (!caughtUp) {
+    caughtUp = name === last.name
+    continue;
+  }
+
   if (name.charAt(0) !== '@') {
     unscoped.push(name)
   }
@@ -53,6 +59,10 @@ console.log(
   unscoped.length
 )
 
+// Configure undici to for production use
+configure()
+
+// eslint-disable-next-line no-constant-condition
 while (true) {
   const names = unscoped.slice(slice * size, (slice + 1) * size)
 
@@ -75,12 +85,14 @@ while (true) {
   /* eslint-disable no-await-in-loop */
   /** @type {Response | undefined} */
   let response
+  /** @type {String} */
+  let text
   /** @type {NpmDownloadBulkResult} */
   let results
 
   try {
     response = await fetch(String(url))
-    results = /** @type {NpmDownloadBulkResult} */ (await response.json())
+    text = /** @type {NpmDownloadBulkResult} */ (await response.text())
   } catch (error) {
     console.log('errrror:', response, url)
     console.log(error)
@@ -96,6 +108,16 @@ while (true) {
     }
 
     continue
+  }
+
+  try {
+    results = JSON.parse(text)
+  } catch (error) {
+    // Remark (0): we should probably check the response headers for non-JSON
+    // which indicates we are being rate-limited.
+    console.error('Error parsing JSON for %s: %s', name, error)
+    console.error('Response text: %s', text)
+    process.exit(1)
   }
 
   previousFailed = false
@@ -137,6 +159,7 @@ while (true) {
   // Intermediate writes to help debugging and seeing some results early.
   setTimeout(async () => {
     await fs.writeFile(destination, JSON.stringify(allResults, null, 2) + '\n')
+    await fs.writeFile(lastpath, JSON.stringify(tail, null, 2) + '\n')
   })
 
   slice++
