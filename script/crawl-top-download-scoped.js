@@ -8,6 +8,7 @@
  */
 
 import fs from 'node:fs/promises'
+import {fetch} from 'undici'
 import {configure, resume, argv} from './crawl-top-tools.js'
 
 let slice = 0
