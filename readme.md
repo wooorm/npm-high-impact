@@ -75,18 +75,18 @@ console.log(npmHighImpact)
 ```
 
 ```js
-9294
+9505
 [
   'semver',
   'ansi-styles',
   'debug',
   'supports-color',
   'chalk',
-  'tslib',
-  'ms',
   'minimatch',
+  'ms',
+  'tslib',
   'strip-ansi',
-  'has-flag',
+  'ansi-regex',
   // …
 ]
 ```
@@ -158,10 +158,10 @@ node script/crawl-top-download-unscoped.js
 node script/crawl-top-download-scoped.js
 ```
 
-…look for download counts of all ±4.1m packages on the registry.
+…look for download counts of all ±4.2m packages on the registry.
 Later scripts can filter the complete list to get the top packages.
 The script takes like 30 hours to run.
-About 10 hours is spent on ±4m unscoped packages.
+About 12 hours is spent on ±4m unscoped packages.
 Another 20 or so on ±1.2m scoped packages (yes,
 sad).
 After filtering,
