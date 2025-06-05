@@ -47,7 +47,6 @@ console.log(
   unscoped.length
 )
 
-// eslint-disable-next-line no-constant-condition
 while (true) {
   const names = unscoped.slice(slice * size, (slice + 1) * size)
 

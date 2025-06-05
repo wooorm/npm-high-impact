@@ -15,7 +15,7 @@
     "type-coverage": "^2.0.0",
     "typescript": "^5.0.0",
     "undici": "^7.0.0",
-    "xo": "^0.60.0"
+    "xo": "^1.0.0"
   },
   "description": "The high-impact (popular) packages of npm",
   "exports": "./index.js",
@@ -68,7 +68,9 @@
   "xo": {
     "prettier": true,
     "rules": {
+      "max-lines": "off",
       "unicorn/prefer-at": "off"
-    }
+    },
+    "space": true
   }
 }

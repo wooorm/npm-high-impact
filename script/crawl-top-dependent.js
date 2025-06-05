@@ -54,7 +54,6 @@ let page = 0 // First page is `1`.
 /** @type {Array<Result>} */
 const allResults = []
 
-// eslint-disable-next-line no-constant-condition
 while (true) {
   page++
   console.log('fetching page: %s, collected total: %s', page, allResults.length)

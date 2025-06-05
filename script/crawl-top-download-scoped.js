@@ -38,7 +38,6 @@ console.log(
 const scopedSize = 24
 slice = 0
 
-// eslint-disable-next-line no-constant-condition
 while (true) {
   const names = scoped.slice(slice * scopedSize, (slice + 1) * scopedSize)
 
