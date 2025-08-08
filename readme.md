@@ -167,6 +167,14 @@ sad).
 After filtering,
 the interesting data would result in about 6k packages.
 
+These scripts support the following options:
+* `--time` - Time period for download counts (default: `last-week`). 
+  Valid values include npm's supported ranges like `last-day`, `last-week`, `last-month`, or specific dates.
+* `--min` - Minimum number of dependents/downloads to include (default: `500`).
+
+The scripts are resumable - if interrupted, they will write progress to `data/download-counts-{scoped,unscoped}.last.json` 
+and can be resumed from where they left off on the next run.
+
 It crawls the npm [package download count API][github-npm-api].
 Unscoped packages are crawled using the batch API to get 128 per request.
 Scoped packages are crawled with 20 HTTP requests at a time,
@@ -185,8 +193,12 @@ packages.
 
 It crawls the `libraries.io` [project search API][libraries-io-api],
 whose results can also [be browsed on the web][libraries-io-web].
+
+The script supports the following option:
+* `--min` - Minimum number of packages that must depend on a package to include it (default: `500`).
+
 Crawling stops paginating when a package is seen that is depended on by less
-than 500 other packages.
+than the specified minimum.
 
 You need an API key for `libraries.io`,
 see their API docs for more info.
