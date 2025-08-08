@@ -1,13 +1,34 @@
-import {join} from 'path'
+import process from 'node:process'
+import fs from 'node:fs/promises'
+import {parseArgs} from 'node:util'
 import {Agent, interceptors, setGlobalDispatcher} from 'undici'
-import minimist from 'minimist'
 
-export const argv = minimist(process.argv.slice(2), {
-  default: {
-    time: 'last-week',
-    min: 500
-  }
+/**
+ * @typedef {Object} DownloadTail
+ * @property {string} name
+ * @property {number} downloads
+ * @property {boolean} ok
+ */
+
+const {values} = parseArgs({
+  args: process.argv.slice(2),
+  options: {
+    time: {
+      type: 'string',
+      default: 'last-week'
+    },
+    min: {
+      type: 'string',
+      default: '500'
+    }
+  },
+  strict: false
 })
+
+export const argv = {
+  time: values.time || 'last-week',
+  min: Number(values.min) || 500
+}
 
 export function configure() {
   // Interceptors to add response caching, DNS caching and retrying to the dispatcher
@@ -22,23 +43,41 @@ export function configure() {
   setGlobalDispatcher(defaultDispatcher) // Add these interceptors to all `fetch` and Undici `request` calls
 }
 
+/**
+ * @param {{type?: string}} options
+ * @returns {Promise<{last: DownloadTail, lastpath: URL} | {lastpath: URL}>}
+ */
 export async function resume({type = 'scoped'}) {
-  const lastpath = join(
-    import.meta.dirname,
-    `../data/download-counts-${type}.last.json`
+  const lastpath = new URL(
+    `../data/download-counts-${type}.last.json`,
+    import.meta.url
   )
 
   try {
-    const json = await import(`${lastpath}`, {with: {type: 'json'}})
+    /** @type {DownloadTail} */
+    const last = JSON.parse(String(await fs.readFile(lastpath)))
     return {
-      last: json.default,
+      last,
       lastpath
     }
-  } catch (err) {
-    if (err.code !== 'ERR_MODULE_NOT_FOUND') {
-      console.warn('[%s] Error reading %s: %s', err.code, lastpath, err.message)
+  } catch (error) {
+    if (isNodeError(error) && error.code !== 'ENOENT') {
+      console.warn(
+        '[%s] Error reading %s: %s',
+        error.code,
+        lastpath,
+        error.message
+      )
     }
 
     return {lastpath}
   }
+}
+
+/**
+ * @param {unknown} error
+ * @returns {error is Error & {code?: string}}
+ */
+export function isNodeError(error) {
+  return error instanceof Error && 'code' in error
 }

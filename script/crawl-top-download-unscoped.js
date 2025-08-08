@@ -1,5 +1,6 @@
 /**
  * @import {Response} from 'undici'
+ * @import {DownloadTail} from './crawl-top-tools.js'
  */
 
 /**
@@ -35,6 +36,7 @@ let errorless = 0
 const input = new URL('../data/packages.txt', import.meta.url)
 const allTheNames = String(await fs.readFile(input)).split('\n')
 
+/** @type {{last?: DownloadTail, lastpath: URL}} */
 const {last, lastpath} = await resume({type: 'unscoped'})
 let caughtUp = !last
 if (last) {
@@ -45,7 +47,7 @@ if (last) {
 const unscoped = []
 for (const name of allTheNames) {
   if (!caughtUp) {
-    caughtUp = name === last.name
+    caughtUp = name === last?.name
     continue
   }
 
@@ -67,7 +69,6 @@ console.log(
 // Configure undici to for production use
 configure()
 
-// eslint-disable-next-line no-constant-condition
 while (true) {
   const names = unscoped.slice(start, start + size)
   console.log(
@@ -95,7 +96,7 @@ while (true) {
   }
 
   const url = new URL(
-    'https://api.npmjs.org/downloads/point/' + `${argv.time}/` + encoded
+    `https://api.npmjs.org/downloads/point/${argv.time}/${encoded}`
   )
 
   /* eslint-disable no-await-in-loop */
@@ -108,7 +109,7 @@ while (true) {
 
   try {
     response = await fetch(String(url))
-    text = /** @type {NpmDownloadBulkResult} */ (await response.text())
+    text = await response.text()
   } catch (error) {
     console.log('errrror:', response, url)
     console.log(error)
@@ -133,7 +134,7 @@ while (true) {
     // which indicates we are being rate-limited.
     console.error('Error parsing JSON for %s: %s', names.join(','), error)
     console.error('Response text: %s', text)
-    process.exit(1)
+    throw new Error(`Failed to parse JSON for ${names.join(',')}: ${error}`)
   }
 
   previousFailed = false

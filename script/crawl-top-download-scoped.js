@@ -1,5 +1,6 @@
 /**
  * @import {NpmDownloadResult, Result} from './crawl-top-download-unscoped.js'
+ * @import {DownloadTail} from './crawl-top-tools.js'
  */
 
 /**
@@ -8,6 +9,7 @@
  */
 
 import fs from 'node:fs/promises'
+import process from 'node:process'
 import {fetch} from 'undici'
 import {configure, resume, argv} from './crawl-top-tools.js'
 
@@ -19,6 +21,7 @@ const destination = new URL(
 const input = new URL('../data/packages.txt', import.meta.url)
 const allTheNames = String(await fs.readFile(input)).split('\n')
 
+/** @type {{last?: DownloadTail, lastpath: URL}} */
 const {last, lastpath} = await resume({type: 'scoped'})
 let caughtUp = !last
 if (last) {
@@ -29,7 +32,7 @@ if (last) {
 const scoped = []
 for (const name of allTheNames) {
   if (!caughtUp) {
-    caughtUp = name === last.name
+    caughtUp = name === last?.name
     continue
   }
 
@@ -40,6 +43,7 @@ for (const name of allTheNames) {
 
 if (scoped.length === 0) {
   if (last) console.log('No scoped packages found after %s', last.name)
+  /* eslint-disable-next-line unicorn/no-process-exit */
   process.exit(0)
 }
 
@@ -89,7 +93,7 @@ while (true) {
       // which indicates we are being rate-limited.
       console.error('Error parsing JSON for %s: %s', name, error)
       console.error('Response text: %s', text)
-      process.exit(1)
+      throw new Error(`Failed to parse JSON for ${name}: ${error}`)
     }
 
     /** @type {Result} */
