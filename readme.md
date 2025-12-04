@@ -75,18 +75,18 @@ console.log(npmHighImpact)
 ```
 
 ```js
-9505
+15113
 [
   'semver',
   'ansi-styles',
   'debug',
-  'supports-color',
   'chalk',
   'minimatch',
-  'ms',
-  'tslib',
+  'supports-color',
   'strip-ansi',
+  'ms',
   'ansi-regex',
+  'string-width',
   // …
 ]
 ```
@@ -103,6 +103,8 @@ There is no default export.
 List of top package names (`Array<string>`).
 
 Sorted by most downloaded first.
+Packages that don’t reach the download threshold but are depended on a lot are
+listed after that in order of dependents.
 Includes (unique) packages from `npmTopDependents` and `npmTopDownloads`.
 
 ### `npmTopDependents`
@@ -122,9 +124,7 @@ Sorted by most downloaded first.
 > 👉 **Note**:
 > not all of these packages are popular.
 > There are some false-positives,
-> such that download counts can be gamed,
-> and that `libraries.io` sometimes thinks that a fork of webpack or so is
-> actually webpack.
+> such that download counts can be gamed.
 
 ## Scripts
 
@@ -136,60 +136,22 @@ This repo includes several scripts to crawl different services.
 node script/crawl-packages.js
 ```
 
-…follows an append-only database to find all the changes to things in the npm
-registry.
-We filter duplicates out,
-but still end up with ±2.5m “things”,
-which aren’t all proper packages.
-Later scripts will have to deal with them being missing.
-
-The script takes like 12-18 hours to run (it finished somewhere at night).
-But the good news is that it’s additive:
-so the next time you run it,
-it’ll only pull in everything that changed since you last ran in,
-which could be as little as 15 minutes for 3 months.
-
-It crawls [`replicate.npmjs.com`][github-npm-replicate].
+Used to take a day but as this uses [`ecosyste.ms`][ecosystems] now it is very
+fast,
+30min to 1h.
+Slightly less complete as actually using npm,
+but as npm is unusable,
+I’ll take it.
 
 ###### Top downloads
 
 ```sh
-node script/crawl-top-download-unscoped.js
-node script/crawl-top-download-scoped.js
+node script/build-top-dependent.js
+node script/build-top-download.js
+node script/build-top.js
 ```
 
-…look for download counts of all ±4.2m packages on the registry.
-Later scripts can filter the complete list to get the top packages.
-The script takes like 30 hours to run.
-About 12 hours is spent on ±4m unscoped packages.
-Another 20 or so on ±1.2m scoped packages (yes,
-sad).
-After filtering,
-the interesting data would result in about 6k packages.
-
-It crawls the npm [package download count API][github-npm-api].
-Unscoped packages are crawled using the batch API to get 128 per request.
-Scoped packages are crawled with 20 HTTP requests at a time,
-as there is no batch API,
-and higher rates are limited by npm.
-
-###### Top dependents
-
-```sh
-node script/crawl-top-dependent.js
-```
-
-…looks for packages that are depended on by 500 or more other packages.
-The script takes like 30 minutes to run and currently gets about 3 000
-packages.
-
-It crawls the `libraries.io` [project search API][libraries-io-api],
-whose results can also [be browsed on the web][libraries-io-web].
-Crawling stops paginating when a package is seen that is depended on by less
-than 500 other packages.
-
-You need an API key for `libraries.io`,
-see their API docs for more info.
+These generate the JS files.
 
 ## Types
 
@@ -247,19 +209,13 @@ This package is safe.
 
 [badge-size-url]: https://bundlejs.com/?q=npm-high-impact
 
+[ecosystems]: https://ecosyste.ms
+
 [esmsh]: https://esm.sh
 
 [file-license]: license
 
 [github-gist-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[github-npm-api]: https://github.com/npm/registry/blob/master/docs/download-counts.md
-
-[github-npm-replicate]: https://github.com/npm/registry-follower-tutorial/blob/master/README.md
-
-[libraries-io-api]: https://libraries.io/api#project-search
-
-[libraries-io-web]: https://libraries.io/search?platforms=npm&sort=dependents_count&order=desc
 
 [npmjs-install]: https://docs.npmjs.com/cli/install
 

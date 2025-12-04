@@ -3,12 +3,8 @@
 *.map
 *.tsbuildinfo
 .DS_Store
-.env
 coverage/
-data/download-counts-scoped.json
-data/download-counts-unscoped.json
-data/packages.txt
-data/sequence.txt
-data/top-dependent.json
+data/downloads*
+data/dependent-packages-count*
 node_modules/
 yarn.lock

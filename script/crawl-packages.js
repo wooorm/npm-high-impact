@@ -1,95 +1,162 @@
-/**
- * @import {Readable} from 'node:stream'
- */
+/* eslint-disable max-depth */
+/* eslint-disable camelcase */
+/* eslint-disable no-await-in-loop */
 
 /**
- * @typedef Database
- * @property {number} update_seq
+ * @typedef Package
+ * @property {number} dependent_packages_count
+ * @property {number} downloads
+ * @property {string} name
  *
- * @typedef Change
- *   Change.
- * @property {number} seq
- *   Change sequence.
- * @property {string} id
- *   Package name.
+ * @typedef ResultDependentPackagesCount
+ * @property {number} dependent_packages_count
+ * @property {string} name
+ *
+ * @typedef ResultDownloads
+ * @property {number} downloads
+ * @property {string} name
+ *
+ * @typedef {ResultDependentPackagesCount | ResultDownloads} Result
+ *
+ * @typedef Search
+ * @property {Exclude<keyof Package, 'name'>} field
+ * @property {number} min
  */
 
-import defaultFs, {promises as fs} from 'node:fs'
-import process from 'node:process'
-import {fetch} from 'undici'
-// @ts-expect-error: untyped.
-import ChangesStream from 'changes-stream'
+import assert from 'node:assert/strict'
+import fs from 'node:fs/promises'
 
-// The npm database.
-const database = 'https://replicate.npmjs.com'
+/** @type {ReadonlyArray<Search>} */
+const searches = [
+  {field: 'downloads', min: 1_000_000},
+  {field: 'dependent_packages_count', min: 500}
+]
 
-let start = 0
-let current = 0
+for (const {field, min} of searches) {
+  console.log('search for packages w/ `%s` more than `%s`', field, min)
 
-await fs.mkdir(new URL('../data', import.meta.url), {recursive: true})
+  const stem = field.replaceAll('_', '-')
 
-try {
-  start = Number.parseInt(
-    String(await fs.readFile(new URL('../data/sequence.txt', import.meta.url))),
-    10
-  )
-} catch {}
+  /** @type {string | undefined} */
+  let next =
+    'https://packages.ecosyste.ms/api/v1/registries/npmjs.org/packages?' +
+    new URLSearchParams({
+      mailto: 'tituswormer@gmail.com',
+      order: 'desc',
+      page: '1',
+      per_page: '400',
+      sort: field
+    })
 
-console.log('starting at: %s', start)
+  /** @type {Array<Result>} */
+  const results = []
+  let total = 0
+  let chunks = 0
 
-/** @type {Set<string>} */
-let set = new Set()
+  while (next) {
+    let rateLimitRemaining = Infinity
+    /** @type {ReadonlyArray<Package> | undefined} */
+    let maybeResult
 
-try {
-  set = new Set(
-    String(
-      await fs.readFile(new URL('../data/packages.txt', import.meta.url))
-    ).split('\n')
-  )
-} catch {}
+    try {
+      console.log('going to: %s', next)
+      const response = await fetch(next)
+      maybeResult = /** @type {ReadonlyArray<Package>} */ (
+        await response.json()
+      )
 
-const databaseResponse = await fetch(database)
-const databaseResult = /** @type {Database} */ (await databaseResponse.json())
-const end = databaseResult.update_seq
-console.log('ending at: %s', end)
+      const page = response.headers.get('current-page')
+      assert.ok(page)
+      const link = response.headers.get('link')
+      next = link?.match(/<([^>]+)>;\s*rel="next"/)?.[1]
 
-process.on('exit', teardown)
-process.on('SIGINT', teardown)
+      /** @type {number | undefined} */
+      let lastValue
 
-/** @type {Readable} */
-const stream = new ChangesStream({
-  db: database,
-  // 60 seconds; this defaults to 60 *minutes*, which is ridiculous.
-  inactivity_ms: 60 * 1000, // eslint-disable-line camelcase
-  // 20 seconds; this defaults to 2 minutes.
-  requestTimeout: 20 * 1000,
-  since: start
-})
+      for (const pkg of maybeResult) {
+        const value = pkg[field]
 
-stream.on('data', function (/** @type {Change} */ change) {
-  current = change.seq
+        if (typeof value !== 'number' || Number.isNaN(value) || value === 0) {
+          console.log(
+            '  package `%s`: invalid value for field `%s` (`%s`), ignoring',
+            pkg.name,
+            field,
+            value
+          )
+          continue
+        }
 
-  if (current < end) {
-    const rest = end - current
-    const progress = ((1 - rest / end) * 100).toFixed(3)
-    console.log('%s (%s%) seq:%s', rest, progress, current)
-    set.add(change.id)
-  } else {
-    console.log('done! seq: %s, end: %s', current, end)
-    teardown()
+        if (value < min) {
+          console.log(
+            '  package `%s`: value for field `%s` (`%s`) below minimum (`%s`), stopping',
+            pkg.name,
+            field,
+            value,
+            min
+          )
+          next = undefined
+          break
+        }
+
+        lastValue = value
+        results.push(
+          field === 'dependent_packages_count'
+            ? {dependent_packages_count: value, name: pkg.name}
+            : {downloads: value, name: pkg.name}
+        )
+      }
+
+      console.log(
+        '%s page: %s; total: %s; last value: %s',
+        field,
+        page,
+        results.length,
+        lastValue
+      )
+
+      rateLimitRemaining = Number(
+        response.headers.get('x-ratelimit-remaining') || '0'
+      )
+    } catch (error) {
+      console.log('error %s, waiting 10m', error, maybeResult)
+      await sleep(10 * 60 * 1000)
+    }
+
+    if (rateLimitRemaining < 1) {
+      console.log('rate limit reached, waiting 10m')
+      await sleep(10 * 60 * 1000)
+    }
+
+    // Avoid data loss and save memory.
+    if (results.length > 10_000) {
+      const basename = stem + '-' + chunks + '.json'
+      await fs.writeFile(
+        new URL('../data/' + basename, import.meta.url),
+        JSON.stringify(results, undefined, 2) + '\n'
+      )
+      total += results.length
+      console.log('saved %s (total %s)', basename, total)
+      chunks++
+      results.length = 0
+    }
   }
-})
 
-function teardown() {
-  console.log('teardown at %s (seq: %s, end: %s)', set.size, current, end)
-  defaultFs.writeFileSync(
-    new URL('../data/packages.txt', import.meta.url),
-    [...set].join('\n')
+  const basename = stem + '-' + chunks + '.json'
+  await fs.writeFile(
+    new URL('../data/' + basename, import.meta.url),
+    JSON.stringify(results, undefined, 2) + '\n'
   )
-  defaultFs.writeFileSync(
-    new URL('../data/sequence.txt', import.meta.url),
-    String(current)
-  )
-  // eslint-disable-next-line unicorn/no-process-exit
-  process.exit()
+  total += results.length
+  console.log('saved %s (total %s)', basename, total)
+  chunks++
+  console.log('done! %s', total)
+}
+
+/**
+ * @param {number} ms
+ */
+async function sleep(ms) {
+  await new Promise(function (resolve) {
+    setTimeout(resolve, ms)
+  })
 }
