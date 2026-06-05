@@ -5,17 +5,17 @@
     "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
   ],
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "c8": "^10.0.0",
+    "@types/node": "^25.0.0",
+    "c8": "^11.0.0",
     "changes-stream": "^2.0.0",
     "dotenv": "^17.0.0",
     "prettier": "^3.0.0",
     "remark-cli": "^12.0.0",
     "remark-preset-wooorm": "^11.0.0",
     "type-coverage": "^2.0.0",
-    "typescript": "^5.0.0",
-    "undici": "^7.0.0",
-    "xo": "^1.0.0"
+    "typescript": "^6.0.0",
+    "undici": "^8.0.0",
+    "xo": "^2.0.0"
   },
   "description": "The high-impact (popular) packages of npm",
   "exports": "./index.js",
@@ -37,6 +37,11 @@
   ],
   "license": "MIT",
   "name": "npm-high-impact",
+  "overrides": {
+    "c8": {
+      "yargs": "^18.0.0"
+    }
+  },
   "prettier": {
     "bracketSpacing": false,
     "singleQuote": true,
@@ -69,6 +74,7 @@
     "prettier": true,
     "rules": {
       "max-lines": "off",
+      "require-unicode-regexp": "off",
       "unicorn/prefer-at": "off"
     },
     "space": true
