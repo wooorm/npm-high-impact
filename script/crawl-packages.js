@@ -130,6 +130,7 @@ for (const {field, min} of searches) {
     // Avoid data loss and save memory.
     if (results.length > 10_000) {
       const basename = stem + '-' + chunks + '.json'
+      await fs.mkdir(new URL('../data', import.meta.url), {recursive: true})
       await fs.writeFile(
         new URL('../data/' + basename, import.meta.url),
         JSON.stringify(results, undefined, 2) + '\n'
